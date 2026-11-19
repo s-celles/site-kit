@@ -27,13 +27,15 @@
 .sk-tone--warn-dashed { color: #8b3d00; background: #fff0db; border-style: dashed; }
 .sk-tone--info { color: #174f8b; background: #e8f1ff; }
 .sk-tone--alt { color: #60328a; background: #f2eafa; border-style: dotted; }
+.sk-tone--alt-dashed { color: #60328a; background: #f2eafa; border-style: dashed; }
 .sk-tone--neutral { color: #465160; background: #edf0f3; border-style: dotted; }
+.sk-tone--neutral-dashed { color: #465160; background: #edf0f3; border-style: dashed; }
 .dark .sk-tone--good { color: #9ee2c9; background: #123d35; }
 .dark .sk-tone--bad, .dark .sk-tone--bad-dashed { color: #ffb8cb; background: #4c2533; }
 .dark .sk-tone--warn, .dark .sk-tone--warn-dashed { color: #ffd0a0; background: #4a301d; }
 .dark .sk-tone--info { color: #b5d6ff; background: #203951; }
-.dark .sk-tone--alt { color: #dbc0f4; background: #392b4b; }
-.dark .sk-tone--neutral { color: #d1dbe5; background: #28313d; }
+.dark .sk-tone--alt, .dark .sk-tone--alt-dashed { color: #dbc0f4; background: #392b4b; }
+.dark .sk-tone--neutral, .dark .sk-tone--neutral-dashed { color: #d1dbe5; background: #28313d; }
 
 /* tables and filterable tables (tables.js) */
 .content table { font-size: .84rem; }
@@ -63,7 +65,9 @@
 .viz-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
 .viz-dot { stroke: var(--viz-surface); stroke-width: 2; }
 .viz-hit { fill: transparent; }
-.viz-pt:hover .viz-dot, .viz-pt:focus .viz-dot { r: 6; }
+.viz-pt:hover .viz-dot, .viz-pt:focus .viz-dot, .viz-pt.viz-active .viz-dot { r: 6; }
+.viz-chart[data-viz="dense"]:focus { outline: 2px solid var(--viz-ink); outline-offset: 2px; }
+.viz-chart[data-viz="dense"]:focus:not(:focus-visible) { outline: none; }
 .viz-pt:focus { outline: none; }
 .viz-pt:focus .viz-dot { stroke: var(--viz-ink); }
 .viz-guide { stroke: var(--viz-ink); stroke-width: 1; stroke-dasharray: 3 3; opacity: .7; }
@@ -71,6 +75,20 @@
 .viz-panel { margin: 0; }
 .viz-panel figcaption { font-size: .85rem; color: var(--viz-ink); }
 @media (max-width: 760px) { .viz-multiples { grid-template-columns: minmax(0, 1fr); } }
-.viz-tooltip { position: absolute; transform: translate(-50%, -100%); pointer-events: none; z-index: 50; background: #fcfcfb; color: #0b0b0b; border: 1px solid #cbd5e1; border-radius: .3rem; padding: .25rem .5rem; font: 12px ui-sans-serif, system-ui, sans-serif; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+.viz-tooltip { position: absolute; transform: translate(-50%, -100%); pointer-events: none; z-index: 50; white-space: pre; text-align: left; background: #fcfcfb; color: #0b0b0b; border: 1px solid #cbd5e1; border-radius: .3rem; padding: .25rem .5rem; font: 12px ui-sans-serif, system-ui, sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
 .dark .viz-tooltip { background: #1a1a19; color: #f0efec; border-color: #3c5269; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* Windows high contrast and other forced colours: badges keep a border,
+   chart lines and dots keep a visible system colour */
+@media (forced-colors: active) {
+  .sk-badge { border: 1px solid CanvasText; forced-color-adjust: none; color: CanvasText; background: Canvas; }
+  .sk-tone--bad-dashed, .sk-tone--warn-dashed, .sk-tone--alt-dashed, .sk-tone--neutral-dashed { border-style: dashed; }
+  .sk-tone--alt, .sk-tone--neutral { border-style: dotted; }
+  .viz-line { stroke: CanvasText !important; }
+  .viz-dot { fill: CanvasText !important; stroke: Canvas; }
+  .viz-grid, .viz-axis, .viz-guide { stroke: GrayText; }
+  .viz-tick, .viz-label { fill: CanvasText; }
+  .viz-tooltip { border: 1px solid CanvasText; }
+  .disclaimer { border-left: 4px solid CanvasText; }
+}

@@ -13,11 +13,19 @@ jobs:
       - uses: actions/setup-go@v5      # Hugo fetches Hextra with Go
         with:
           go-version-file: example/go.mod
-      - name: Checker tests
-        run: python3 -I tests/test_check_site.py
+      - name: Tool tests
+        run: |
+          python3 -I tests/test_check_site.py
+          python3 -I tests/test_compare_builds.py
+          python3 -I tests/test_upstream_status.py
       - name: Install pinned Hugo Extended
         run: bash scripts/install_hugo.sh "$RUNNER_TEMP/hugo"
-      - name: Build the example against the module
-        run: (cd example && "$RUNNER_TEMP/hugo/hugo" --minify --destination "$RUNNER_TEMP/public")
+      - name: Build the example twice against the module
+        run: |
+          cd example
+          "$RUNNER_TEMP/hugo/hugo" --minify --destination "$RUNNER_TEMP/public-a"
+          "$RUNNER_TEMP/hugo/hugo" --minify --destination "$RUNNER_TEMP/public-b"
       - name: The example conforms to SPEC.md
-        run: python3 -I tools/check_site.py --hugo example/hugo.yaml --content example/content --static example/static
+        run: python3 -I tools/check_site.py --site "$RUNNER_TEMP/public-a" --config example/site-kit.json --hugo example/hugo.yaml --repo example
+      - name: The two builds are identical (SK-DETERMINISM)
+        run: python3 -I tools/compare_builds.py "$RUNNER_TEMP/public-a" "$RUNNER_TEMP/public-b" --config example/site-kit.json

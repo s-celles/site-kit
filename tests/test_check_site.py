@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Checks for tools/check_site.py. Run with python3 -I tests/test_check_site.py."""
+import json
 import pathlib
 import sys
 import tempfile
@@ -37,69 +38,214 @@ menu:
       params:
         type: search
 """
-HOME = """---
-title: "X"
----
 
+HOME = """<!doctype html><html><head><title>X</title><meta charset="utf-8"></head><body>
+<main><p>X is a registry of findings.</p>
 <p class="data-stamp">Data at commit <a href="u"><code>abc1234</code></a> (2026-11-19).</p>
-
 <div class="disclaimer">
-
-**Disclaimer.** An individual, non-commercial project, not endorsed by anyone.
-
-**Provenance.** Written with an AI assistant.
-
+<p><strong>Disclaimer.</strong> An individual, non-commercial project, not endorsed by anyone.</p>
+<p><strong>Provenance.</strong> Written with an AI assistant; a person decides what is reported.</p>
 </div>
-
-## Cite
-
-> A. Author. *X*. Version 1.
+<div class="sk-stats"><a class="sk-stat" href="/f"><strong>2</strong><span>findings</span></a></div>
+<p><span class="sk-badge sk-tone--good" data-status="PASS">PASS</span></p>
+<h2 id="cite">Cite<a class="subheading-anchor" href="#cite"></a></h2>
+<blockquote><p>A. Author. <em>X</em>. Version 1.</p></blockquote>
+</main></body></html>
 """
 
+PAGE = "<!doctype html><html><body><main><h1>{name}</h1><p>body<br>text</p>{extra}</main></body></html>"
 
-def site(tmp, hugo=HUGO, home=HOME, pages=("findings/_index.md", "upstream.md", "history.md", "methodology.md", "statuses.md"),
-         static=("llms.txt", "llms-full.txt")):
+CHART = ('<figure class="viz"><svg class="viz-chart" viewBox="0 0 10 10" role="img" aria-label="tests over time">'
+         '<g class="viz-pt" tabindex="0" aria-label="pass: 3, 2026-11-19"><circle class="viz-dot" cx="1" cy="1" r="4"/></g>'
+         '</svg></figure>')
+TABLE = "<table><tr><th>date</th><th>pass</th></tr><tr><td>2026-11-19</td><td>3</td></tr></table>"
+MERMAID = '<pre class="mermaid">flowchart LR\n  A["inputs"] --> B["results"]\n  B -->|published| C(site)\n</pre>'
+
+
+def build(tmp, home=HOME, pages=None, files=("llms.txt", "llms-full.txt"), config=None, hugo=None, repo_files=("CITATION.cff",)):
+    """A built site in tmp/public, and the paths check() takes."""
     root = pathlib.Path(tmp)
-    (root / "site").mkdir(parents=True)
-    (root / "site/hugo.yaml").write_text(hugo)
-    c = root / "content"
-    c.mkdir()
-    (c / "_index.md").write_text(home)
-    for p in pages:
-        (c / p).parent.mkdir(parents=True, exist_ok=True)
-        (c / p).write_text("---\ntitle: p\n---\n\nbody\n")
-    (root / "static").mkdir()
-    for s in static:
-        (root / "static" / s).write_text("x")
-    return root / "site/hugo.yaml", c, root / "static"
+    pub = root / "public"
+    pub.mkdir(parents=True)
+    (pub / "index.html").write_text(home)
+    if pages is None:
+        pages = {"findings": "", "upstream": "", "history": CHART + TABLE, "methodology": MERMAID, "statuses": ""}
+    for name, extra in pages.items():
+        (pub / name).mkdir(parents=True, exist_ok=True)
+        (pub / name / "index.html").write_text(PAGE.format(name=name, extra=extra))
+    for f in files:
+        (pub / f).write_text("x")
+    repo = root / "repo"
+    repo.mkdir()
+    for f in repo_files:
+        (repo / f).write_text("cff-version: 1.2.0\n")
+    kw = {"site": pub, "repo": repo}
+    if config is not None:
+        (root / "site-kit.json").write_text(json.dumps(config))
+        kw["config"] = root / "site-kit.json"
+    if hugo is not None:
+        (root / "hugo.yaml").write_text(hugo)
+        kw["hugo"] = root / "hugo.yaml"
+    return kw
 
 
-class CheckSite(unittest.TestCase):
+def rules(vs, level=None):
+    return {v.rule for v in vs if level is None or v.level == level}
+
+
+class ConformingSite(unittest.TestCase):
     def test_a_conforming_site_passes(self):
         with tempfile.TemporaryDirectory() as t:
-            self.assertEqual(check_site.check(*site(t)), [])
+            self.assertEqual(check_site.check(**build(t, hugo=HUGO)), [])
 
-    def test_each_rule(self):
-        cases = {
-            "SK-MENU-ORDER": dict(hugo=HUGO.replace("weight: 3", "weight: 9")),
-            "SK-MODULE": dict(hugo=HUGO.replace("    - path: github.com/s-celles/site-kit\n", "")),
-            "SK-MODULE ": dict(hugo=HUGO.replace("    - path: github.com/s-celles/site-kit\n    - path: github.com/imfing/hextra\n",
-                                                  "    - path: github.com/imfing/hextra\n    - path: github.com/s-celles/site-kit\n")),
-            "SK-HOME-STAMP": dict(home=HOME.replace("Data at commit", "Built from")),
-            "SK-HOME-DISCLAIMER": dict(home=HOME.replace("non-commercial", "commercial")),
-            "SK-HOME-PROVENANCE": dict(home=HOME.replace("AI assistant", "team")),
-            "SK-HOME-CITE": dict(home=HOME.replace("## Cite", "## Notes")),
-            "SK-PAGE-STATUSES": dict(pages=("findings/_index.md", "upstream.md", "history.md", "methodology.md")),
-            "SK-LLMS": dict(static=("llms.txt",)),
-        }
-        for rule, kw in cases.items():
-            with self.subTest(rule=rule), tempfile.TemporaryDirectory() as t:
-                self.assertIn(rule.strip(), {v.rule for v in check_site.check(*site(t, **kw))})
+    def test_every_rule_has_a_level(self):
+        for rule, level in check_site.RULES.items():
+            self.assertIn(level, ("MUST", "SHOULD"), rule)
+
+    def test_documenter_style_pages_count(self):
+        # Documenter without pretty URLs writes NAME.html, possibly in a subdirectory
+        with tempfile.TemporaryDirectory() as t:
+            kw = build(t, pages={})
+            for name, extra in {"statuses": "", "methodology": "", "upstream": "", "reference/history": ""}.items():
+                p = kw["site"] / f"{name}.html"
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(PAGE.format(name=name, extra=extra))
+            self.assertEqual(rules(check_site.check(**kw)), set())
+
+
+class HomeRules(unittest.TestCase):
+    def failing(self, **kw):
+        with tempfile.TemporaryDirectory() as t:
+            return rules(check_site.check(**build(t, **kw)))
+
+    def test_stamp(self):
+        self.assertIn("SK-HOME-STAMP", self.failing(home=HOME.replace('class="data-stamp"', 'class="note"')))
+        self.assertIn("SK-HOME-STAMP", self.failing(home=HOME.replace("abc1234", "HEAD").replace("(2026-11-19)", "")))
+        # a dated record instead of a commit
+        self.assertNotIn("SK-HOME-STAMP", self.failing(home=HOME.replace("abc1234", "run").replace("(2026-11-19)", "of 2026-11-02")))
+
+    def test_disclaimer_words_must_be_inside_the_disclaimer(self):
+        outside = HOME.replace('<div class="disclaimer">', '<div>') + '<div class="disclaimer"><p>x</p></div>'
+        got = self.failing(home=outside)
+        self.assertIn("SK-HOME-DISCLAIMER", got)
+        self.assertIn("SK-HOME-PROVENANCE", got)
+        self.assertIn("SK-HOME-DISCLAIMER", self.failing(home=HOME.replace("non-commercial", "commercial")))
+        self.assertIn("SK-HOME-PROVENANCE", self.failing(home=HOME.replace("an AI assistant", "a team")))
+
+    def test_cite_heading(self):
+        self.assertIn("SK-HOME-CITE", self.failing(home=HOME.replace(">Cite<", ">Notes<")))
+
+    def test_citation_file_is_a_warning(self):
+        with tempfile.TemporaryDirectory() as t:
+            vs = check_site.check(**build(t, repo_files=()))
+            self.assertEqual(rules(vs), {"SK-CITATION"})
+            self.assertEqual(rules(vs, "SHOULD"), {"SK-CITATION"})
+
+
+class PageRules(unittest.TestCase):
+    def test_required_and_recommended_pages(self):
+        with tempfile.TemporaryDirectory() as t:
+            vs = check_site.check(**build(t, pages={"findings": ""}))
+            self.assertEqual(rules(vs, "MUST"), {"SK-PAGE-STATUSES", "SK-PAGE-METHODOLOGY"})
+            self.assertEqual(rules(vs, "SHOULD"), {"SK-PAGE-UPSTREAM", "SK-PAGE-HISTORY"})
+
+    def test_a_declared_omission_silences_the_warning(self):
+        cfg = {"spec": "0.2", "omit": {"upstream": "three issues, listed on Methodology", "history": "a single run"}}
+        with tempfile.TemporaryDirectory() as t:
+            vs = check_site.check(**build(t, pages={"statuses": "", "methodology": ""}, config=cfg))
+            self.assertEqual(rules(vs), set())
+
+    def test_an_omission_needs_a_reason(self):
+        with tempfile.TemporaryDirectory() as t:
+            vs = check_site.check(**build(t, pages={"statuses": "", "methodology": "", "history": ""}, config={"omit": {"upstream": ""}}))
+            self.assertIn("SK-PAGE-UPSTREAM", rules(vs))
+
+    def test_llms(self):
+        with tempfile.TemporaryDirectory() as t:
+            self.assertIn("SK-LLMS", rules(check_site.check(**build(t, files=("llms.txt",)))))
+        with tempfile.TemporaryDirectory() as t:   # split per registry
+            self.assertNotIn("SK-LLMS", rules(check_site.check(**build(t, files=("llms.txt", "llms-full-findings.txt")))))
+
+
+class MarkupRules(unittest.TestCase):
+    def failing(self, extra, where="findings"):
+        pages = {"findings": "", "upstream": "", "history": "", "methodology": "", "statuses": ""}
+        pages[where] = extra
+        with tempfile.TemporaryDirectory() as t:
+            return rules(check_site.check(**build(t, pages=pages)))
+
+    def test_badge_shows_a_word(self):
+        self.assertIn("SK-BADGE-WORD", self.failing('<span class="sk-badge sk-tone--bad" data-status="FAIL"> </span>'))
+
+    def test_one_tone_per_word_across_the_site(self):
+        self.assertIn("SK-BADGE-TONE", self.failing('<span class="sk-badge sk-tone--warn" data-status="pass">pass</span>'))
+        self.assertNotIn("SK-BADGE-TONE", self.failing('<span class="sk-badge sk-tone--good sk-badge--result" data-status="PASS">Pass</span>'))
+
+    def test_chart_needs_a_label_and_a_table(self):
+        self.assertIn("SK-CHART", self.failing(CHART))                                   # no table on its page
+        self.assertIn("SK-CHART", self.failing(CHART.replace(' aria-label="tests over time"', "") + TABLE))
+        self.assertIn("SK-CHART", self.failing(CHART.replace(' aria-label="pass: 3, 2026-11-19"', "") + TABLE))
+        self.assertNotIn("SK-CHART", self.failing(CHART + TABLE))
+
+    def test_mermaid_labels(self):
+        for bad in ('A["a; b"] --> B', 'A["x &lt;br&gt; y"] --> B', 'A -->|step #2| B', 'A{"is it #1"} --> B'):
+            with self.subTest(bad=bad):
+                self.assertIn("SK-MERMAID", self.failing(f'<pre class="mermaid">flowchart LR\n  {bad}\n</pre>', "methodology"))
+        seq = '<pre class="mermaid">sequenceDiagram\n  A->>B: send x; y\n</pre>'
+        self.assertIn("SK-MERMAID", self.failing(seq, "methodology"))
+        fine = ('<pre class="mermaid">graph LR;\n  A["inputs"] --> B(results);\n  classDef k fill:#fee;\n'
+                '  style B fill:#fff\n  %% a comment; with # signs\n</pre>')
+        self.assertNotIn("SK-MERMAID", self.failing(fine, "methodology"))
+
+
+class ConfigRules(unittest.TestCase):
+    def test_menu_order_from_the_hugo_configuration(self):
+        with tempfile.TemporaryDirectory() as t:
+            self.assertIn("SK-MENU-ORDER", rules(check_site.check(**build(t, hugo=HUGO.replace("weight: 3", "weight: 9")))))
 
     def test_menu_entries_may_be_absent_but_not_out_of_order(self):
         hugo = HUGO.replace("    - name: History\n      pageRef: /history\n      weight: 3\n", "")
         with tempfile.TemporaryDirectory() as t:
-            self.assertNotIn("SK-MENU-ORDER", {v.rule for v in check_site.check(*site(t, hugo=hugo))})
+            self.assertNotIn("SK-MENU-ORDER", rules(check_site.check(**build(t, hugo=hugo))))
+
+    def test_menu_from_site_kit_json(self):
+        ok = ["Findings", "Properties", "Upstream", "History", "Methodology", "Docs", "GitHub", "Search"]
+        with tempfile.TemporaryDirectory() as t:
+            self.assertNotIn("SK-MENU-ORDER", rules(check_site.check(**build(t, config={"menu": ok}))))
+        for bad in (["Upstream", "Findings"], ok[:1] + ["Tests"] + ok[1:]):          # registry after Upstream; 9 entries
+            with self.subTest(bad=bad), tempfile.TemporaryDirectory() as t:
+                self.assertIn("SK-MENU-ORDER", rules(check_site.check(**build(t, config={"menu": bad}))))
+
+    def test_module_order(self):
+        no_module = HUGO.replace("    - path: github.com/s-celles/site-kit\n", "")
+        late = HUGO.replace("    - path: github.com/s-celles/site-kit\n    - path: github.com/imfing/hextra\n",
+                            "    - path: github.com/imfing/hextra\n    - path: github.com/s-celles/site-kit\n")
+        for hugo in (no_module, late):
+            with tempfile.TemporaryDirectory() as t:
+                self.assertIn("SK-MODULE", rules(check_site.check(**build(t, hugo=hugo))))
+
+    def test_spec_version_mismatch_is_reported(self):
+        with tempfile.TemporaryDirectory() as t:
+            self.assertIn("SK-SPEC", rules(check_site.check(**build(t, config={"spec": "9.9"}))))
+
+
+class Main(unittest.TestCase):
+    def test_exit_status_follows_must_rules(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as t:
+            kw = build(t, repo_files=())                     # only a SHOULD fails
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                code = check_site.main(["--site", str(kw["site"]), "--repo", str(kw["repo"])])
+            self.assertEqual(code, 0)
+            self.assertIn(f"SPEC {check_site.SPEC_VERSION}", out.getvalue())
+            self.assertIn("SHOULD SK-CITATION", out.getvalue())
+        with tempfile.TemporaryDirectory() as t:
+            kw = build(t, files=())
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(check_site.main(["--site", str(kw["site"])]), 1)
+                self.assertEqual(check_site.main(["--site", str(kw["site"] / "missing")]), 2)
 
 
 if __name__ == "__main__":

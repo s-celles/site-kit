@@ -1,0 +1,6 @@
+{
+  "spec": "0.2",
+  "menu": ["Findings", "Upstream", "History", "Methodology", "Search"],
+  "omit": {},
+  "volatile": []
+}

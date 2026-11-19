@@ -38,3 +38,6 @@ params:
       pass: good
       fail: bad
       open: warn
+      proved_in_model: alt
+    badgeLabels:       # optional display form of a word (lower case)
+      proved_in_model: Proved in model

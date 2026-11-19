@@ -1,6 +1,10 @@
 ---
-title: upstream
+title: Upstream
 type: docs
 ---
 
-upstream page.
+| repository | number | kind | state | title |
+|---|---|---|---|---|
+| example/project | 1 | issue | {{< badge "status" "open" >}} | an example issue |
+
+A closed issue does not prove that a fix reached a release.
