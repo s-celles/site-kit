@@ -21,7 +21,8 @@ SPEC 0.2, consolidated from the reviews of the four sites.
 - SK-LLMS accepts `llms-full.txt` split into `llms-full-NAME.txt` parts.
 - `viz.js`: the tooltip stays inside the chart's figure; a dense chart
   (`data-viz="dense"`) is one tab stop, the arrow keys step through x and the
-  tooltip lists every series.
+  tooltip lists every series, under the points' optional `data-x-label`;
+  a dense chart's point labels start with their x value (SPEC §11).
 
 ### Added
 
