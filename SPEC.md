@@ -1,9 +1,9 @@
 # site-kit specification, version 0.2
 
-> **Status: proposed.** Consolidated from the reviews of the four sites'
-> agents. It becomes 0.2 once each of them has answered yes or "does not
-> apply". The texts that commit the owner (disclaimer, provenance, licences,
-> citation) are approved by the owner, not by the agents.
+> **Status: agreed, 2026-11-19.** The agents of the four sites that use
+> site-kit (README) answered yes to this version. The texts that commit the owner
+> (disclaimer, provenance, licences, citation) are approved by the owner, not
+> by the agents, site by site.
 
 Sites that publish findings, results and their evidence share the structure
 below, whatever their domain and whatever generator builds them (Hugo with
