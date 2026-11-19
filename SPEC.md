@@ -1,5 +1,9 @@
 # site-kit specification, version 0.1
 
+> **Status: draft.** The agents of the four sites are reviewing it; version
+> 0.2 will be the one they agree on. Changes are made by pull request, merged
+> once each site has agreed or said that the change does not apply to it.
+
 Sites that publish findings, results and their evidence share the
 structure below, whatever the domain of the project. This specification
 is that structure.

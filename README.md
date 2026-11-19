@@ -1,5 +1,7 @@
 # site-kit
 
+> **Draft.** 0.1 is under review by the four sites; see `SPEC.md`.
+
 The shared structure and building blocks of the project sites of
 [s-celles](https://github.com/s-celles): iec61131-conformance, go-in-lean,
 julia-findings and computer_algebra_system_benchmarks. These sites publish
