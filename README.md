@@ -4,7 +4,7 @@
 
 The shared structure and building blocks of the project sites of
 [s-celles](https://github.com/s-celles): iec61131-conformance, go-in-lean,
-julia-findings and computer_algebra_system_benchmarks. These sites publish
+julia-findings and computer-algebra-system-benchmarks. These sites publish
 findings, results and their evidence.
 
 - [`SPEC.md`](SPEC.md): what every site has, in which order (menu, home page,
