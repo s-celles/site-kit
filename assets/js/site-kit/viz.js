@@ -6,7 +6,8 @@
 //   its label.
 // - A dense chart (svg tabindex="0" data-viz="dense"): the chart is one tab
 //   stop. The arrow keys step through x (Home and End jump to the ends), and
-//   the tooltip lists every series at that x. The mouse picks the nearest x.
+//   the tooltip lists every series at that x, under the group's data-x-label
+//   when the points carry one. The mouse picks the nearest x.
 //
 // The tooltip stays inside the chart's figure (or its .viz container).
 document.addEventListener("DOMContentLoaded", () => {
@@ -62,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const group = byX.get(xs[i]);
         pts.forEach((p) => p.classList.remove("viz-active"));
         group.forEach((p) => p.classList.add("viz-active"));
-        tip.textContent = group.map((p) => p.getAttribute("aria-label")).join("\n");
+        const head = group[0].dataset.xLabel;   // optional: the x value, shown once
+        tip.textContent = (head ? [head] : []).concat(group.map((p) => p.getAttribute("aria-label"))).join("\n");
         place(group.map((p) => p.querySelector(".viz-dot")), xs[i]);
       };
       const clear = () => { pts.forEach((p) => p.classList.remove("viz-active")); hide(); };

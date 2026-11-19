@@ -201,6 +201,7 @@ The rules above hold on the HTML, whatever produced it:
 | badge | `class="sk-badge sk-tone--TONE" data-status="WORD"` |
 | filterable table | a table inside `class="filterable"` |
 | chart | `svg.viz-chart` with `aria-label`, inside `class="viz"`; points `g.viz-pt` with `aria-label`; a chart that is one tab stop has `tabindex="0"` and `data-viz="dense"` |
+| dense chart point | its `aria-label` starts with its x value (a date), so the tooltip that joins the labels at one x reads on its own; or the points carry `data-x-label`, shown once as the tooltip's first line |
 
 Implementations in this repository:
 
