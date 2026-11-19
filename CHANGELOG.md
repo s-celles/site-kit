@@ -2,6 +2,13 @@
 
 Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
+## [Unreleased]
+
+### Changed
+
+- SPEC §13: the `site-kit.json` example adds Documenter's second volatile
+  line, `generation_timestamp` in `.documenter-siteinfo.json`.
+
 ## [0.2.0] - 2026-11-19
 
 SPEC 0.2, consolidated from the reviews of the four sites and agreed by them.

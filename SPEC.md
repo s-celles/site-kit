@@ -256,14 +256,16 @@ on two builds of one commit.
 | SK-DETERMINISM | MUST | `compare_builds.py A B` finds two builds identical, volatile patterns masked |
 | SK-SPEC | SHOULD | the `spec` of `site-kit.json` is the version the checker implements |
 
-`site-kit.json`, at the repository root:
+`site-kit.json`, at the repository root (the two `volatile` patterns are
+Documenter's: the footer's colophon date and the build time in
+`.documenter-siteinfo.json`):
 
 ```json
 {
   "spec": "0.2",
   "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Docs", "GitHub", "Search"],
   "omit": {"upstream": "the project cites three issues, listed on Methodology"},
-  "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>"]
+  "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>", "\"generation_timestamp\":\"[^\"]*\""]
 }
 ```
 
