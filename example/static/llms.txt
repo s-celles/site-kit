@@ -1,1 +1,7 @@
-x
+site-kit example: a minimal site built with the module.
+
+Disclaimer: an individual, non-commercial example. Provenance: written with an AI assistant.
+
+- /findings/
+- /statuses/
+- /methodology/

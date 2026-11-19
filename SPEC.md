@@ -1,36 +1,52 @@
-# site-kit specification, version 0.1
+# site-kit specification, version 0.2
 
-> **Status: draft.** The agents of the four sites are reviewing it; version
-> 0.2 will be the one they agree on. Changes are made by pull request, merged
-> once each site has agreed or said that the change does not apply to it.
+> **Status: proposed.** Consolidated from the reviews of the four sites'
+> agents. It becomes 0.2 once each of them has answered yes or "does not
+> apply". The texts that commit the owner (disclaimer, provenance, licences,
+> citation) are approved by the owner, not by the agents.
 
-Sites that publish findings, results and their evidence share the
-structure below, whatever the domain of the project. This specification
-is that structure.
+Sites that publish findings, results and their evidence share the structure
+below, whatever their domain and whatever generator builds them (Hugo with
+Hextra, Documenter, or another). The contract is stated on the **built
+site**: its pages, their HTML markers and its files. The Hugo module of this
+repository is one implementation of it. The CSS, the scripts, the snapshot
+schema and the checks serve every generator.
 
-"Registry" below means the project's main collection: findings, results,
-tests, properties, benches.
+A rule with an identifier (SK-...) is checked by `tools/check_site.py` on the
+built HTML. **MUST** rules fail the check; **SHOULD** rules are warnings.
+Section 13 lists them.
+
+"Registry" means the project's main collection (findings, results, tests,
+properties, benches). "Entry" means one item of it.
 
 ## 1. Principles
 
-- The site is generated from data committed in the repository, outside the
-  repository (no generated page is committed), on every build.
-- Two builds of the same commit produce the same files: no time stamp of the
-  build, a stable order. A test of the generator renders twice and compares.
-- A build needs no network beyond fetching the pinned Hugo modules. Data from
-  elsewhere (upstream issue states, external history) comes from a dated
-  snapshot that a script refreshes and that is committed.
-- Every page that shows numbers says which commit they come from
-  (SK-HOME-STAMP on the home page; recommended on every such page): a
-  paragraph `<p class="data-stamp">Data at commit <code>abc1234</code> (date).</p>`.
+- The site is generated from data committed in the repository, on every
+  build. No generated page is committed. The generator writes outside the
+  repository, or into a directory that git ignores and that carries a guard
+  marker (for example `.sitegen`), so that hand-written files are never
+  replaced.
+- Two builds of the same commit produce the same files (SK-DETERMINISM,
+  checked by `tools/compare_builds.py`): no build time stamp, a stable order.
+  A generator that writes a volatile line it cannot suppress (Documenter's
+  "generated with ... on DATE" footer note) declares that line's pattern in
+  `site-kit.json` (`volatile`, §13), and the comparison masks it. Only such
+  generator lines are declared; the site's own content is not masked.
+- The build needs no network beyond fetching pinned dependencies. Data from
+  elsewhere (upstream issue states, external measurements) comes from a
+  committed snapshot with a documented schema and a refresh script.
+- Numbers are dated. The data stamp (§3) names the commit the data come
+  from, or the dated record the data carry (a run date). A number in prose
+  carries its unit.
+- No analytics, no tracking, no personal data beyond authorship.
 
 ## 2. Navigation
 
-Menu `main`, in this order, entries that a site does not have being left out
-(SK-MENU-ORDER):
+The main menu has at most 8 entries, in this order, entries a site does not
+have being left out (SK-MENU-ORDER, checked when the menu is declared in
+`site-kit.json` or in a Hugo configuration):
 
-1. the project's registries, in the order the project chooses (for example
-   Findings, Results, Properties);
+1. the project's registries, in the order the project chooses;
 2. Upstream;
 3. History;
 4. Methodology;
@@ -38,102 +54,222 @@ Menu `main`, in this order, entries that a site does not have being left out
 6. GitHub;
 7. Search.
 
-The sidebar follows the same order (page weights).
-
-The Hugo configuration imports `github.com/s-celles/site-kit` and then Hextra
-(SK-MODULE). The order matters: the first import wins, and Hextra has its own
-`badge` shortcode and empty `custom/` hooks.
+Docs is the catch-all: contributing, agent policy, systems and environment,
+how the site is built, changelog. These are sidebar pages, not menu entries.
+The sidebar follows the menu's order.
 
 ## 3. Home page
 
-In this order:
+MUST, in this order:
 
-1. kicker (`<div class="sk-kicker">`), one bold sentence saying what the
-   project is, a short paragraph;
-2. the data stamp (SK-HOME-STAMP);
-3. a `<div class="disclaimer">` with two paragraphs:
+1. a one-sentence statement of what the project is (a hero may hold it);
+2. the data stamp: an element with class `data-stamp` naming a commit (7 to
+   40 hexadecimal digits) or a date (SK-HOME-STAMP);
+3. an element with class `disclaimer` holding two paragraphs, from
+   `TEMPLATES.md`:
    - **Disclaimer**: an individual, non-commercial project, not produced,
-     endorsed or certified by any standards body, vendor or the projects it
-     examines, with its aim (SK-HOME-DISCLAIMER: the words "non-commercial");
-   - **Provenance**: what an AI assistant wrote and what a person checked
-     (SK-HOME-PROVENANCE: the word "AI");
-4. four stat tiles (`{{< stats >}}{{< stat ... >}}{{< /stats >}}`) and links
-   to the registry, Methodology and Statuses;
-5. a short table of the current state (for example the result per system
-   under examination);
-6. the newest entries (findings, upstream reports or runs);
-7. `## Cite` with a citation from `CITATION.cff` (SK-HOME-CITE).
+     endorsed or certified by the bodies and projects it examines, with its
+     aim (SK-HOME-DISCLAIMER: the words "non-commercial" inside it);
+   - **Provenance**: what an AI assistant wrote and what a person checked,
+     and that a person decides what is reported upstream
+     (SK-HOME-PROVENANCE: the word "AI" inside it);
+4. at most four stat tiles, and links to the registry, Methodology and
+   Statuses;
+5. a heading "Cite" with a citation generated from `CITATION.cff`, not
+   copied by hand (SK-HOME-CITE; SK-CITATION: the file exists).
 
-The footer of every page (site parameter `siteKit.footer`) repeats the
-disclaimer in one sentence and names the licences.
+SHOULD: the newest entries, or the latest runs; a short table of the current
+state. MUST for a site that reuses third-party material: a "Sources" section
+naming each source, its licence and how it was used ("generated with",
+"quoted from", "derived from"), apart from the site's own licences. SHOULD,
+here or on Methodology: what is not reproduced (third-party numbers quoted
+with caveats, systems not run and why).
 
-## 4. Registry entries
+A hero image is allowed. The stamp and the disclaimer come before the stat
+tiles.
 
-Each entry has its own page with, in this order:
+The footer of every page repeats, in one line, the disclaimer and the
+licences (`TEMPLATES.md`).
 
-- a title with its identifier;
-- a line: the subject (the system, package or component the entry is
-  about), status badge, source file;
-- upstream: each issue or pull request with its state from the snapshot,
-  issue and fix shown separately where they differ;
-- evidence: the reproducer (runnable as given), the raw output of every
-  system, not only a verdict;
-- related entries (tests citing a finding, findings citing a test);
-- history of the entry's status, dated, when the project records it.
+## 4. Registry and entries
 
 The registry index is one table, filterable and sortable in the browser
-(`<div class="filterable">` around a Markdown table; `tables.js`), complete
-without JavaScript.
+(`<div class="filterable">` around a table; `tables.js`) and complete without
+JavaScript. A site SHOULD also publish the registry as JSON
+(`registry.json`).
+
+Each entry has its own page. Its fields:
+
+- MUST: identifier and title; subject (what the entry is about: a system,
+  package or component; an entry may have several subjects, each with its
+  own status); status badge; the evidence as recorded: the reproducer,
+  runnable as given, and its output or outputs, the raw outputs of the
+  systems examined, or the counterexample or proof it rests on, never a
+  verdict alone;
+- when it applies: upstream issues and fixes with their states (§6), issue
+  and fix shown separately; related entries; a dated history of the status;
+  timings when the project measures them; the source file and line.
+
+The order of the fields is a recommendation. An entry's metadata SHOULD be
+machine-readable (YAML front matter or a YAML file per entry) rather than
+parsed from prose.
 
 ## 5. Statuses
 
-A page `statuses` defines every word a badge can carry (SK-PAGE-STATUSES):
-results, entry statuses, upstream states. Badges come from the `badge`
-shortcode; the site maps each word to a tone in `siteKit.badgeTones`
-(good, bad, bad-dashed, warn, warn-dashed, info, alt, neutral). The word is
-always shown, so no meaning rests on colour alone.
+A page `statuses` defines every word a badge can carry: results, entry
+statuses, upstream states (SK-PAGE-STATUSES). A badge always shows its word
+(SK-BADGE-WORD). A word maps to exactly one tone across the site
+(SK-BADGE-TONE). Tones: good, bad, bad-dashed, warn, warn-dashed, info, alt,
+alt-dashed, neutral, neutral-dashed. The markup is
+`<span class="sk-badge sk-tone--TONE" data-status="WORD">LABEL</span>`. The
+label is the word or a display form of it (for example "Proved in model" for
+`proved_in_model`); `data-status` keeps the raw word.
 
 ## 6. Upstream
 
-A page `upstream` lists every upstream issue and pull request the project
-cites, by repository, with kind, state, opened, closed and title, from the
-snapshot (SK-PAGE-UPSTREAM). It says that a closed issue does not prove that
-a fix reached a release.
+When the project cites upstream issues, a page `upstream` lists them by
+repository, with kind, state, dates and title, from the snapshot
+(SK-PAGE-UPSTREAM, a warning; a site without upstream reports declares the
+page omitted in `site-kit.json`, with its reason). The page says that a
+closed issue does not prove that a fix reached a release.
+
+The snapshot is a TSV with the columns `repo`, `number`, `kind` (`issue`,
+`pr`, `cl`), `state` (GitHub: `open`, `closed`, `not planned`, `merged`;
+Gerrit: `new`, `merged`, `abandoned`), `created`, `closed`, `merged`,
+`fixes` (the issue a pull request or change fixes, `repo#number`),
+`cited_by` (entry identifiers, space-separated) and `title`.
+`tools/upstream_status.py` refreshes it for GitHub. A site may keep
+hand-written notes next to the generated table.
 
 ## 7. History
 
-A page `history` charts the project over time (SK-PAGE-HISTORY): the size of
-the registry, its results, the upstream reports. Time is on the x axis. One y
-axis per chart, starting at 0. More than three series become small
-multiples on one scale. Every point has a tooltip that the keyboard reaches
-(`viz.js`: `g.viz-pt` with `tabindex="0"` and an `aria-label`). A table under
-the charts gives every value. The data come from the git history at build
-time (checkout with `fetch-depth: 0`) or from a committed file with one row
-per run.
+A page `history` charts the project over time (SK-PAGE-HISTORY, a warning: a
+young project may have a single run). The site declares where the data come
+from: the git history at build time (`fetch-depth: 0` in CI) for what the
+repository records, or a committed snapshot (JSON or TSV, schema documented
+in the repository) for anything else.
+
+Charts follow the markup contract of §11:
+
+- time on the x axis, one y axis per chart, starting at 0; a logarithmic
+  axis is allowed for quantities spanning orders of magnitude, with its base
+  in the axis label;
+- more than three series become small multiples on one scale;
+- every chart has an `aria-label` and a table of its values on the page
+  (SK-CHART);
+- a tooltip reachable from the keyboard. A dense chart is one tab stop, and
+  the arrow keys step through x with a tooltip listing every series at that
+  x. A sparse chart may make each point a tab stop instead. The tooltip
+  stays inside the chart's figure;
+- the series palette is validated for colour-vision deficiency, in light and
+  dark, against the surfaces of the site's theme. The kit's palette is
+  validated; a site may use its own validated palette.
 
 ## 8. Methodology
 
 A page `methodology` (SK-PAGE-METHODOLOGY) shows the pipeline from inputs to
 published results as a diagram, says what a result does and does not mean,
-and lists the checks of the expected values. Mermaid diagrams keep
-semicolons, angle brackets and hashes out of node labels.
+lists the checks of the expected values, and names the site-kit tag the site
+pins. Mermaid labels and messages contain no semicolon, angle bracket or
+hash (SK-MERMAID): they break the rendering silently.
 
-## 9. Machine-readable output and citation
+## 9. Machine-readable output
 
-- `llms.txt` and `llms-full.txt` at the site root (SK-LLMS): the pitch, the
-  disclaimer and provenance, the pages, and the full registry as text.
-- `CITATION.cff` in the repository; its citation on the home page.
-- The licences of code and of data, and the terms of third-party sources,
-  are named in the footer and the README.
+`llms.txt` and `llms-full.txt` at the site root (SK-LLMS): what the project
+is, the disclaimer and provenance, the pages, and the registry as text. Above
+about 2 MB, `llms-full.txt` is split per registry (`llms-full-NAME.txt`,
+listed in `llms.txt`).
 
-## 10. Build
+## 10. Wording, licences, citation
 
-- Hugo Extended at the version of `hugo-version`, installed with a checksum
-  (`scripts/install_hugo.sh`), theme Hextra and this module as Hugo modules.
-- The generator writes `content/` and `static/` outside the repository;
-  `build.sh OUT [HUGO]` runs it, Hugo, then copies `static/`.
-- CI: the generator's tests, `check_site.py`, the build; deploy `main` with
-  `actions/configure-pages` (base URL from Pages) and `actions/deploy-pages`.
-- Accessibility: badges carry words, charts have an aria-label, a tooltip
-  reachable from the keyboard and a table view; light and dark palettes are
-  validated for colour-vision deficiency.
+`TEMPLATES.md` gives the disclaimer, provenance and footer as texts with
+slots (project, examined projects, aim, licences of code and data). Each
+site's owner approves its final text. The provenance says concretely what an
+AI assistant wrote and what a person checked, without naming the model. The
+licence choice stays with each site; the footer and the README name it, and
+the terms of third-party sources (§3).
+
+## 11. Markup contract and implementations
+
+The rules above hold on the HTML, whatever produced it:
+
+| What | Markup |
+|---|---|
+| data stamp | `class="data-stamp"` |
+| disclaimer and provenance | `class="disclaimer"` |
+| stat tiles | `class="sk-stats"`, each `class="sk-stat"` |
+| badge | `class="sk-badge sk-tone--TONE" data-status="WORD"` |
+| filterable table | a table inside `class="filterable"` |
+| chart | `svg.viz-chart` with `aria-label`, inside `class="viz"`; points `g.viz-pt` with `aria-label`; a chart that is one tab stop has `tabindex="0"` and `data-viz="dense"` |
+
+Implementations in this repository:
+
+- for every generator: `assets/css/site-kit/site-kit.css`,
+  `assets/js/site-kit/tables.js` and `assets/js/site-kit/viz.js`,
+  `tools/check_site.py`, `tools/compare_builds.py`,
+  `tools/upstream_status.py`, `TEMPLATES.md`;
+- for Hugo with Hextra: the module (shortcodes `badge`, `stats`, `stat`;
+  hooks `custom/head-end.html` and `custom/footer.html`), imported before
+  Hextra, since the first import wins and Hextra has its own `badge` and
+  empty hooks (SK-MODULE, checked when a Hugo configuration is given). On
+  migration, a site deletes or renames its own `badge` shortcode and its own
+  `custom/head-end.html`, or calls `partial "site-kit/head.html"` from the
+  latter. `scripts/install_hugo.sh` and `hugo-version` pin Hugo Extended.
+
+Generators, registry schemas and page content stay with each site.
+
+## 12. Accessibility
+
+Badges carry words. Charts have an `aria-label`, a keyboard tooltip and a
+table. Motion is reduced under `prefers-reduced-motion`. Under
+`forced-colors`, badges keep a border and charts keep their lines. Light and
+dark palettes are validated against the surfaces of the theme (Hextra:
+`#ffffff` light, `#111111` dark).
+
+## 13. Checks
+
+`check_site.py --site BUILT_DIR [--config site-kit.json] [--hugo hugo.yaml]
+[--repo DIR]` prints the SPEC version it checks and one line per failed rule,
+with its level. It exits with 1 when a MUST rule fails. SK-DETERMINISM is
+checked by `tools/compare_builds.py BUILD_A BUILD_B --config site-kit.json`
+on two builds of one commit.
+
+| Rule | Level | What it checks |
+|---|---|---|
+| SK-HOME-STAMP | MUST | home `.data-stamp` names a 7-40 hex commit or a YYYY-MM-DD date |
+| SK-HOME-DISCLAIMER | MUST | home `.disclaimer` contains "non-commercial" |
+| SK-HOME-PROVENANCE | MUST | home `.disclaimer` contains "AI" |
+| SK-HOME-CITE | MUST | home has a heading "Cite" |
+| SK-CITATION | SHOULD | `CITATION.cff` exists in the repository (`--repo`) |
+| SK-PAGE-STATUSES | MUST | a `statuses` page |
+| SK-PAGE-METHODOLOGY | MUST | a `methodology` page |
+| SK-PAGE-UPSTREAM | SHOULD | an `upstream` page, unless declared omitted |
+| SK-PAGE-HISTORY | SHOULD | a `history` page, unless declared omitted |
+| SK-LLMS | MUST | `llms.txt`, and `llms-full.txt` or its `llms-full-NAME.txt` parts, at the root |
+| SK-BADGE-WORD | MUST | every `.sk-badge` shows a non-empty label |
+| SK-BADGE-TONE | MUST | a `data-status` word has one tone across the site |
+| SK-CHART | MUST | every `svg.viz-chart` has an `aria-label`, and its page a table |
+| SK-MERMAID | MUST | no `;`, `<` or `#` inside Mermaid labels and messages |
+| SK-MENU-ORDER | MUST | the declared menu follows §2 |
+| SK-MODULE | MUST | a given Hugo configuration imports site-kit before Hextra |
+| SK-DETERMINISM | MUST | `compare_builds.py A B` finds two builds identical, volatile patterns masked |
+| SK-SPEC | SHOULD | the `spec` of `site-kit.json` is the version the checker implements |
+
+`site-kit.json`, at the repository root:
+
+```json
+{
+  "spec": "0.2",
+  "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Docs", "GitHub", "Search"],
+  "omit": {"upstream": "the project cites three issues, listed on Methodology"},
+  "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>"]
+}
+```
+
+## 14. Governance
+
+The SPEC changes by pull request on site-kit, merged once each site's agent
+has answered yes or "does not apply". Versions follow Semantic Versioning;
+each site pins a tag (Hugo: its `go.mod`; others: the tag it fetches) and
+names it on its Methodology page. The CHANGELOG has one line per rule
+identifier that changes.

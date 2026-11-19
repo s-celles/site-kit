@@ -1,6 +1,15 @@
 ---
-title: history
+title: History
 type: docs
 ---
 
-history page.
+From a committed snapshot (example data).
+
+<figure class="viz"><svg class="viz-chart" data-viz="dense" tabindex="0" viewBox="0 0 760 210" role="img" aria-label="Findings and open issues over time, 2026-11-01 to 2026-11-19"><line class="viz-grid" x1="44" x2="700" y1="174.0" y2="174.0"/><text class="viz-tick" x="38" y="178.0" text-anchor="end">0</text><line class="viz-grid" x1="44" x2="700" y1="134.0" y2="134.0"/><text class="viz-tick" x="38" y="138.0" text-anchor="end">2</text><line class="viz-grid" x1="44" x2="700" y1="94.0" y2="94.0"/><text class="viz-tick" x="38" y="98.0" text-anchor="end">4</text><line class="viz-grid" x1="44" x2="700" y1="54.0" y2="54.0"/><text class="viz-tick" x="38" y="58.0" text-anchor="end">6</text><line class="viz-grid" x1="44" x2="700" y1="14.0" y2="14.0"/><text class="viz-tick" x="38" y="18.0" text-anchor="end">8</text><line class="viz-axis" x1="44" x2="700" y1="174" y2="174"/><text class="viz-tick" x="60" y="192" text-anchor="middle">11-01</text><text class="viz-tick" x="260" y="192" text-anchor="middle">11-08</text><text class="viz-tick" x="460" y="192" text-anchor="middle">11-15</text><text class="viz-tick" x="660" y="192" text-anchor="middle">11-19</text><path class="viz-line" style="stroke:var(--viz-1)" d="M60,134.0 L260,114.0 L460,74.0 L660,54.0"/><g class="viz-pt" aria-label="findings: 2, 2026-11-01"><circle class="viz-hit" cx="60" cy="134.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-1)" cx="60" cy="134.0" r="4"/></g><g class="viz-pt" aria-label="findings: 3, 2026-11-08"><circle class="viz-hit" cx="260" cy="114.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-1)" cx="260" cy="114.0" r="4"/></g><g class="viz-pt" aria-label="findings: 5, 2026-11-15"><circle class="viz-hit" cx="460" cy="74.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-1)" cx="460" cy="74.0" r="4"/></g><g class="viz-pt" aria-label="findings: 6, 2026-11-19"><circle class="viz-hit" cx="660" cy="54.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-1)" cx="660" cy="54.0" r="4"/></g><text class="viz-label" x="670" y="58.0">findings 6</text><path class="viz-line" style="stroke:var(--viz-2)" d="M60,154.0 L260,154.0 L460,134.0 L660,94.0"/><g class="viz-pt" aria-label="open: 1, 2026-11-01"><circle class="viz-hit" cx="60" cy="154.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-2)" cx="60" cy="154.0" r="4"/></g><g class="viz-pt" aria-label="open: 1, 2026-11-08"><circle class="viz-hit" cx="260" cy="154.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-2)" cx="260" cy="154.0" r="4"/></g><g class="viz-pt" aria-label="open: 2, 2026-11-15"><circle class="viz-hit" cx="460" cy="134.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-2)" cx="460" cy="134.0" r="4"/></g><g class="viz-pt" aria-label="open: 4, 2026-11-19"><circle class="viz-hit" cx="660" cy="94.0" r="9"/><circle class="viz-dot" style="fill:var(--viz-2)" cx="660" cy="94.0" r="4"/></g><text class="viz-label" x="670" y="98.0">open 4</text></svg><figcaption>Findings and open issues (y from 0). Tab to the chart, then use the arrow keys.</figcaption></figure>
+
+| date | findings | open |
+|---|---|---|
+| 2026-11-01 | 2 | 1 |
+| 2026-11-08 | 3 | 1 |
+| 2026-11-15 | 5 | 2 |
+| 2026-11-19 | 6 | 4 |

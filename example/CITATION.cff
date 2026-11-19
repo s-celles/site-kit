@@ -1,0 +1,5 @@
+cff-version: 1.2.0
+message: "An example citation file."
+title: "site-kit example"
+authors:
+  - name: "site-kit example"
