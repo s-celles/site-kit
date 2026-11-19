@@ -1,7 +1,6 @@
 # site-kit
 
-> **SPEC 0.2, proposed.** It is agreed when each site's agent has answered
-> yes or "does not apply"; see `SPEC.md`, §14.
+> **SPEC 0.2**, agreed by the four sites; changes follow `SPEC.md`, §14.
 
 The shared structure and building blocks of the project sites of
 [s-celles](https://github.com/s-celles): iec61131-conformance, go-in-lean,

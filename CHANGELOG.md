@@ -2,9 +2,9 @@
 
 Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
-## [Unreleased]
+## [0.2.0] - 2026-11-19
 
-SPEC 0.2, consolidated from the reviews of the four sites.
+SPEC 0.2, consolidated from the reviews of the four sites and agreed by them.
 
 ### Changed
 
