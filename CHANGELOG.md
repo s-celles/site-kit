@@ -2,6 +2,12 @@
 
 Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
+## [0.1.1] - 2026-11-19
+
+### Changed
+
+- `SPEC.md` names no project and no domain: its examples are generic.
+
 ## [0.1.0] - 2026-11-19
 
 ### Added

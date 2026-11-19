@@ -1,10 +1,8 @@
 # site-kit specification, version 0.1
 
-The project sites of s-celles (iec61131-conformance, go-in-lean,
-julia-findings, computer_algebra_system_benchmarks) present findings,
-results and their evidence. This specification is the structure they share.
-A rule marked with an identifier (SK-...) is checked by
-`tools/check_site.py`; the other rules are reviewed by hand.
+Sites that publish findings, results and their evidence share the
+structure below, whatever the domain of the project. This specification
+is that structure.
 
 "Registry" below means the project's main collection: findings, results,
 tests, properties, benches.
@@ -28,7 +26,7 @@ Menu `main`, in this order, entries that a site does not have being left out
 (SK-MENU-ORDER):
 
 1. the project's registries, in the order the project chooses (for example
-   Results, Findings, Tests, Runtimes; or Findings, Properties);
+   Findings, Results, Properties);
 2. Upstream;
 3. History;
 4. Methodology;
@@ -57,7 +55,8 @@ In this order:
      (SK-HOME-PROVENANCE: the word "AI");
 4. four stat tiles (`{{< stats >}}{{< stat ... >}}{{< /stats >}}`) and links
    to the registry, Methodology and Statuses;
-5. a short table of the current state (for example passed per runtime);
+5. a short table of the current state (for example the result per system
+   under examination);
 6. the newest entries (findings, upstream reports or runs);
 7. `## Cite` with a citation from `CITATION.cff` (SK-HOME-CITE).
 
@@ -69,7 +68,8 @@ disclaimer in one sentence and names the licences.
 Each entry has its own page with, in this order:
 
 - a title with its identifier;
-- a line: target (runtime, package, system), status badge, source file;
+- a line: the subject (the system, package or component the entry is
+  about), status badge, source file;
 - upstream: each issue or pull request with its state from the snapshot,
   issue and fix shown separately where they differ;
 - evidence: the reproducer (runnable as given), the raw output of every
