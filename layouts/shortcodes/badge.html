@@ -1,0 +1,12 @@
+{{- /*
+  {{< badge "PASS" >}} or {{< badge "status" "proved_in_model" >}}: a status word
+  in a badge. Its tone (colour, border style) comes from the site parameter
+  siteKit.badgeTones, a map from the word to one of the tones of
+  site-kit.css; a word without a tone is neutral. The word is always shown,
+  so no meaning rests on colour alone.
+*/ -}}
+{{- $kind := "" -}}{{- $word := .Get 0 -}}
+{{- with .Get 1 }}{{ $kind = $word }}{{ $word = . }}{{ end -}}
+{{- $tones := site.Params.siteKit.badgeTones | default dict -}}
+{{- $tone := index $tones (lower $word) | default "neutral" -}}
+<span class="sk-badge sk-tone--{{ $tone }}{{ with $kind }} sk-badge--{{ . }}{{ end }}" data-status="{{ $word }}">{{ replace $word "_" " " }}</span>

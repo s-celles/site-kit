@@ -1,0 +1,9 @@
+{{- /* Styles and scripts of site-kit; called by custom/head-end.html. */ -}}
+{{- with site.Params.siteKit.themeColor }}<meta name="theme-color" content="{{ . }}">{{ end }}
+{{- with site.Params.siteKit.icon }}<link rel="icon" href="{{ . | relURL }}" type="image/svg+xml">{{ end }}
+{{- $css := resources.Get "css/site-kit/site-kit.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{- range slice "tables" "viz" }}
+{{- $js := resources.Get (printf "js/site-kit/%s.js" .) | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{- end }}

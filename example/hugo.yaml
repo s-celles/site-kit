@@ -1,0 +1,40 @@
+# A minimal site that uses the module; CI builds it and runs check_site.py.
+baseURL: https://example.org/
+title: site-kit example
+noBuildLock: true
+disableKinds: [taxonomy, term]
+module:
+  replacements: "github.com/s-celles/site-kit -> ../.."
+  imports:
+    - path: github.com/s-celles/site-kit   # first: its badge and hooks win over Hextra's
+    - path: github.com/imfing/hextra
+menu:
+  main:
+    - name: Findings
+      pageRef: /findings
+      weight: 1
+    - name: Upstream
+      pageRef: /upstream
+      weight: 2
+    - name: History
+      pageRef: /history
+      weight: 3
+    - name: Methodology
+      pageRef: /methodology
+      weight: 4
+    - name: Search
+      weight: 5
+      params:
+        type: search
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+params:
+  siteKit:
+    themeColor: "#173f66"
+    footer: "An individual, non-commercial example. MIT."
+    badgeTones:
+      pass: good
+      fail: bad
+      open: warn

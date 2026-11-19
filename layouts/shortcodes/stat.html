@@ -1,0 +1,3 @@
+{{- $href := .Get "href" -}}
+{{- $link := cond (hasPrefix $href "/") (relref .Page $href) $href -}}
+<a class="sk-stat" href="{{ $link }}"><strong>{{ .Get "value" }}</strong><span>{{ .Get "label" }}</span></a>

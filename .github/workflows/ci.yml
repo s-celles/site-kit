@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5      # Hugo fetches Hextra with Go
+        with:
+          go-version-file: example/go.mod
+      - name: Checker tests
+        run: python3 -I tests/test_check_site.py
+      - name: Install pinned Hugo Extended
+        run: bash scripts/install_hugo.sh "$RUNNER_TEMP/hugo"
+      - name: Build the example against the module
+        run: (cd example && "$RUNNER_TEMP/hugo/hugo" --minify --destination "$RUNNER_TEMP/public")
+      - name: The example conforms to SPEC.md
+        run: python3 -I tools/check_site.py --hugo example/hugo.yaml --content example/content --static example/static

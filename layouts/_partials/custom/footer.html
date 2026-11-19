@@ -1,0 +1,2 @@
+{{- /* The footer line of every page: site parameter siteKit.footer (Markdown). */ -}}
+{{- with site.Params.siteKit.footer }}<p class="sk-footer-note">{{ . | markdownify }}</p>{{ end -}}
