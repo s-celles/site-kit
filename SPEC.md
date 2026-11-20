@@ -295,8 +295,8 @@ site that examines none declares the page omitted in `site-kit.json`, with
 its reason.
 
 The page is generated from `docs/disclosures.tsv`, committed in the
-repository (SK-DISCLOSURES): lines starting with `#` are comments, then a
-header and one row per contributor and project, with the tab-separated
+repository (SK-DISCLOSURES): lines starting with `#` are comments, anywhere
+in the file, including before the header; then a header and one row per contributor and project, with the tab-separated
 columns `contributor`, `orcid`, `project`, `kind`, `role` and `note`. `kind`
 is one of `examined system`, `compared system`, `tool`, `source of NAME`,
 `benchmark`, `AI assistance`, `other`. A row whose role is `none`, or whose
@@ -308,8 +308,9 @@ The page shows:
 
 - a one-line summary;
 - one section per contributor, with their ORCID and their rows;
-- a matrix with one row per system, source or tool and one column per
-  contributor, each cell the declared role or `none`;
+- a matrix with one row per system present in the published results and per
+  declared source or tool, and one column per contributor, each cell the
+  declared role or `none`;
 - the use of AI assistants;
 - what limits the bias;
 - how to report an unfair comparison or a wrong declaration.
