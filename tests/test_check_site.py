@@ -27,8 +27,8 @@ menu:
     - name: Methodology
       pageRef: /methodology
       weight: 4
-    - name: Disclosure
-      pageRef: /conflict-of-interest
+    - name: Disclosures
+      pageRef: /disclosures
       weight: 4.5
     - name: Docs
       pageRef: /docs
@@ -49,7 +49,7 @@ HOME = """<!doctype html><html><head><title>X</title><meta charset="utf-8"></hea
 <p><strong>Disclaimer.</strong> An individual, non-commercial project, not endorsed by anyone.</p>
 <p><strong>Provenance.</strong> Written with an AI assistant; a person decides what is reported.</p>
 </div>
-<p>The author maintains one of the systems compared. <a href="/conflict-of-interest/">Conflict of interest</a></p>
+<p>The author maintains one of the systems compared. <a href="/disclosures/">Conflict of interest</a></p>
 <div class="sk-stats"><a class="sk-stat" href="/f"><strong>2</strong><span>findings</span></a></div>
 <p><span class="sk-badge sk-tone--good" data-status="PASS">PASS</span></p>
 <h2 id="cite">Cite<a class="subheading-anchor" href="#cite"></a></h2>
@@ -81,7 +81,7 @@ def build(tmp, home=HOME, pages=None, files=("llms.txt", "llms-full.txt"), confi
     (pub / "index.html").write_text(home)
     if pages is None:
         pages = {"findings": "", "upstream": "", "history": CHART + TABLE, "methodology": MERMAID, "statuses": "",
-                 "conflict-of-interest": ""}
+                 "disclosures": ""}
     for name, extra in pages.items():
         (pub / name).mkdir(parents=True, exist_ok=True)
         (pub / name / "index.html").write_text(PAGE.format(name=name, extra=extra))
@@ -120,7 +120,7 @@ class ConformingSite(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             kw = build(t, pages={})
             for name, extra in {"statuses": "", "methodology": "", "upstream": "", "reference/history": "",
-                                "conflict-of-interest": ""}.items():
+                                "disclosures": ""}.items():
                 p = kw["site"] / f"{name}.html"
                 p.parent.mkdir(parents=True, exist_ok=True)
                 p.write_text(PAGE.format(name=name, extra=extra))
@@ -164,8 +164,8 @@ class PageRules(unittest.TestCase):
             self.assertEqual(rules(vs, "SHOULD"), {"SK-PAGE-UPSTREAM", "SK-PAGE-HISTORY"})
 
     def test_a_declared_omission_silences_the_warning(self):
-        cfg = {"spec": "0.3", "omit": {"upstream": "three issues, listed on Methodology", "history": "a single run",
-                                       "conflict-of-interest": "the project examines no third-party system"}}
+        cfg = {"spec": "0.4", "omit": {"upstream": "three issues, listed on Methodology", "history": "a single run",
+                                       "disclosures": "the project examines no third-party system"}}
         with tempfile.TemporaryDirectory() as t:
             vs = check_site.check(**build(t, pages={"statuses": "", "methodology": ""}, config=cfg))
             self.assertEqual(rules(vs), set())
@@ -224,11 +224,11 @@ class ConfigRules(unittest.TestCase):
             self.assertNotIn("SK-MENU-ORDER", rules(check_site.check(**build(t, hugo=hugo))))
 
     def test_menu_from_site_kit_json(self):
-        ok = ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosure", "Docs", "GitHub", "Search"]
+        ok = ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosures", "Docs", "GitHub", "Search"]
         with tempfile.TemporaryDirectory() as t:
             self.assertNotIn("SK-MENU-ORDER", rules(check_site.check(**build(t, config={"menu": ok}))))
         for bad in (["Upstream", "Findings"], ok[:1] + ["Tests"] + ok[1:],            # registry after Upstream; 10 entries
-                    ["Findings", "Disclosure", "Methodology"]):                      # Disclosure before Methodology
+                    ["Findings", "Disclosures", "Methodology"]):                      # Disclosure before Methodology
             with self.subTest(bad=bad), tempfile.TemporaryDirectory() as t:
                 self.assertIn("SK-MENU-ORDER", rules(check_site.check(**build(t, config={"menu": bad}))))
 
@@ -253,10 +253,16 @@ class DisclosureRules(unittest.TestCase):
     def test_the_page_is_required_unless_omitted_with_a_reason(self):
         pages = {"findings": "", "upstream": "", "history": CHART + TABLE, "methodology": MERMAID, "statuses": ""}
         self.assertIn("SK-PAGE-DISCLOSURE", rules(self.failing(pages=pages), "MUST"))
-        self.assertIn("SK-PAGE-DISCLOSURE", rules(self.failing(pages=pages, config={"omit": {"conflict-of-interest": " "}})))
-        omitted = self.failing(pages=pages, config={"omit": {"conflict-of-interest": "examines no third-party system"}},
-                               repo_files={"CITATION.cff": "cff-version: 1.2.0\n"}, home=HOME.replace('href="/conflict-of-interest/"', 'href="/x/"'))
+        self.assertIn("SK-PAGE-DISCLOSURE", rules(self.failing(pages=pages, config={"omit": {"disclosures": " "}})))
+        omitted = self.failing(pages=pages, config={"omit": {"disclosures": "examines no third-party system"}},
+                               repo_files={"CITATION.cff": "cff-version: 1.2.0\n"}, home=HOME.replace('href="/disclosures/"', 'href="/x/"'))
         self.assertEqual(rules(omitted), set())
+
+    def test_the_old_page_name_no_longer_counts(self):
+        # SPEC 0.4 renamed the page from conflict-of-interest to disclosures
+        pages = {"findings": "", "upstream": "", "history": CHART + TABLE, "methodology": MERMAID, "statuses": "",
+                 "conflict-of-interest": ""}
+        self.assertIn("SK-PAGE-DISCLOSURE", rules(self.failing(pages=pages), "MUST"))
 
     def test_the_declarations_file(self):
         head = "contributor\torcid\tproject\tkind\trole\tnote\n"
@@ -282,7 +288,7 @@ class DisclosureRules(unittest.TestCase):
         self.assertNotIn("SK-DISCLOSURES", rules(self.failing(repo_files={"CITATION.cff": "x", "docs/disclosures.tsv": no_orcid})))
 
     def test_the_home_page_links_to_it(self):
-        vs = self.failing(home=HOME.replace('href="/conflict-of-interest/"', 'href="/x/"'))
+        vs = self.failing(home=HOME.replace('href="/disclosures/"', 'href="/x/"'))
         self.assertEqual(rules(vs, "SHOULD"), {"SK-HOME-DISCLOSURE"})
         self.assertEqual(rules(vs, "MUST"), set())
 

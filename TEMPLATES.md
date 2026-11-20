@@ -73,7 +73,7 @@ template.
 > none}; works with an AI assistant.
 
 The same sentence goes on the home page (near the disclaimer, with a link to
-the `conflict-of-interest` page), in the footer, the README, `CITATION.cff`
+the `disclosures` page), in the footer, the README, `CITATION.cff`
 (for example in `abstract`) and `llms.txt`. The AI assistance rows of
 `docs/disclosures.tsv` say what the assistant did and how its output was
 reviewed, without naming the model or the tool.

@@ -1,5 +1,5 @@
 ---
-title: Conflict of interest
+title: Disclosures
 type: docs
 ---
 

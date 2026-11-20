@@ -22,8 +22,8 @@ menu:
     - name: Methodology
       pageRef: /methodology
       weight: 4
-    - name: Disclosure
-      pageRef: /conflict-of-interest
+    - name: Disclosures
+      pageRef: /disclosures
       weight: 4.5
     - name: Search
       weight: 5
