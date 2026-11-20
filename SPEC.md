@@ -302,7 +302,8 @@ its reason.
 The page is generated from `docs/disclosures.tsv`, committed in the
 repository (SK-DISCLOSURES): lines starting with `#` are comments, anywhere
 in the file, including before the header; then a header and one row per contributor and project, with the tab-separated
-columns `contributor`, `orcid`, `project`, `kind`, `role` and `note`. `kind`
+columns `contributor`, `orcid` (empty for a contributor without one),
+`project`, `kind`, `role` and `note`. `kind`
 is one of `examined system`, `compared system`, `tool`, `source of NAME`,
 `benchmark`, `AI assistance`, `other`. A row whose role is `none`, or whose
 project is `none`, is also a declaration. Every contributor writes at least
@@ -312,7 +313,7 @@ reviewed, without naming the model or the tool ("an AI assistant").
 The page shows:
 
 - a one-line summary;
-- one section per contributor, with their ORCID and their rows;
+- one section per contributor, with their ORCID if they have one and their rows;
 - a matrix with one row per system present in the published results and per
   declared source or tool, and one column per contributor, each cell the
   declared role or `none`;

@@ -192,7 +192,7 @@ def disclosure_problems(text):
         who, orcid, project, kind, role, _ = f
         if not who or not project or not role:
             out.append(f"row {n}: contributor, project and role are required")
-        if not ORCID.match(orcid):
+        if orcid and not ORCID.match(orcid):          # empty: the contributor has no ORCID
             out.append(f"row {n}: invalid ORCID {orcid!r}")
         if kind not in DISCLOSURE_KINDS and not (kind.startswith("source of ") and len(kind) > len("source of ")):
             out.append(f"row {n}: unknown kind {kind!r}")
