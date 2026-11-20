@@ -277,6 +277,9 @@ class DisclosureRules(unittest.TestCase):
                 self.assertIn("SK-DISCLOSURES", rules(self.failing(repo_files=files), "MUST"))
         ok = head + "A\t0000-0001-2345-6789\tSystem X\tsource of bench H\tauthor\t\n" + "A\t0000-0001-2345-6789\tnone\tother\tnone\tno funding\n" + ai
         self.assertNotIn("SK-DISCLOSURES", rules(self.failing(repo_files={"CITATION.cff": "x", "docs/disclosures.tsv": ok})))
+        # a contributor without an ORCID leaves the column empty; a filled one must be valid
+        no_orcid = head + "B\t\tSystem X\texamined system\tauthor\t\n" + "B\t\tan AI assistant\tAI assistance\tx\ty\n"
+        self.assertNotIn("SK-DISCLOSURES", rules(self.failing(repo_files={"CITATION.cff": "x", "docs/disclosures.tsv": no_orcid})))
 
     def test_the_home_page_links_to_it(self):
         vs = self.failing(home=HOME.replace('href="/conflict-of-interest/"', 'href="/x/"'))

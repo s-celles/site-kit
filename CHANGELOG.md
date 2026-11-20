@@ -10,6 +10,12 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
   a short project slug (`celles2026goinlean`), so that one author's works of a year
   do not collide. Wording only; no rule identifier changes.
 
+### Fixed
+
+- SK-DISCLOSURES: an empty `orcid` is allowed, for a contributor without
+  an ORCID; a filled one must still be valid. SPEC §15 says so; 0.3.0's
+  check rejected every row without one.
+
 ## [0.3.0] - 2026-11-20
 
 SPEC 0.3: the conflict of interest page and the declarations of every
