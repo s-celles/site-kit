@@ -4,6 +4,10 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-20
+
+Agreed by the four sites.
+
 ### Added
 
 - SPEC §3 and TEMPLATES.md: the BibTeX key of the Cite section is author, year and
