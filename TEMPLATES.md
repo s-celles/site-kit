@@ -57,3 +57,15 @@ template.
 
 > **Not reproduced here.** {Third-party numbers quoted with their caveats;
 > systems not run, and why.}
+
+## Conflict of interest summary (SPEC.md §15)
+
+> Disclosure: {the author's relation to the systems examined or compared, in
+> one clause each, or "none"}; {funding, employment or other interest, or
+> none}; works with an AI assistant.
+
+The same sentence goes on the home page (near the disclaimer, with a link to
+the `conflict-of-interest` page), in the footer, the README, `CITATION.cff`
+(for example in `abstract`) and `llms.txt`. The AI assistance rows of
+`docs/disclosures.tsv` say what the assistant did and how its output was
+reviewed, without naming the model or the tool.

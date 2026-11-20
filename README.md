@@ -1,6 +1,7 @@
 # site-kit
 
-> **SPEC 0.2**, agreed by the four sites; changes follow `SPEC.md`, §14.
+> **SPEC 0.3**, proposed (adds the conflict of interest page, §15); SPEC 0.2
+> was agreed by the four sites. Changes follow `SPEC.md`, §14.
 
 The shared structure and building blocks of the project sites of
 [s-celles](https://github.com/s-celles): iec61131-conformance, go-in-lean,

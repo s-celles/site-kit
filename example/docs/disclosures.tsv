@@ -1,0 +1,6 @@
+# Conflict of interest and AI assistance declarations (SPEC.md §15), example data.
+contributor	orcid	project	kind	role	note
+A. Author	0000-0001-2345-6789	System X	compared system	maintainer	
+A. Author	0000-0001-2345-6789	System Y	compared system	none	
+A. Author	0000-0001-2345-6789	none	other	none	no funding, employment or other interest
+A. Author	0000-0001-2345-6789	an AI assistant	AI assistance	wrote the harness and the site	every change reviewed by the author

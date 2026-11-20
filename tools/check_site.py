@@ -7,7 +7,7 @@ The rules are checked on the built HTML, so they hold whatever generator
 produced it (Hugo, Documenter, another). --config is the site's
 site-kit.json (menu, omitted pages, volatile patterns); --hugo a Hugo
 configuration, for the menu and the module order; --repo the repository,
-for CITATION.cff. Each rule has the identifier and the level SPEC.md gives
+for CITATION.cff and docs/disclosures.tsv. Each rule has the identifier and the level SPEC.md gives
 it. Exit status 1 if a MUST rule fails (SHOULD rules are warnings), 2 if
 there is no built site.
 """
@@ -19,7 +19,7 @@ import sys
 from collections import namedtuple
 from html.parser import HTMLParser
 
-SPEC_VERSION = "0.2"
+SPEC_VERSION = "0.3"
 Violation = namedtuple("Violation", "rule level message")
 
 RULES = {
@@ -30,11 +30,18 @@ RULES = {
     "SK-LLMS": "MUST", "SK-BADGE-WORD": "MUST", "SK-BADGE-TONE": "MUST",
     "SK-CHART": "MUST", "SK-MERMAID": "MUST", "SK-MENU-ORDER": "MUST", "SK-MODULE": "MUST",
     "SK-SPEC": "SHOULD",
+    "SK-PAGE-DISCLOSURE": "MUST", "SK-DISCLOSURES": "MUST", "SK-HOME-DISCLOSURE": "SHOULD",
 }
 PAGES = {"SK-PAGE-STATUSES": "statuses", "SK-PAGE-METHODOLOGY": "methodology",
-         "SK-PAGE-UPSTREAM": "upstream", "SK-PAGE-HISTORY": "history"}
-TAIL = ("Upstream", "History", "Methodology", "Docs", "GitHub", "Search")   # SPEC.md §2
-MENU_MAX = 8
+         "SK-PAGE-UPSTREAM": "upstream", "SK-PAGE-HISTORY": "history",
+         "SK-PAGE-DISCLOSURE": "conflict-of-interest"}
+OMITTABLE = {"SK-PAGE-UPSTREAM", "SK-PAGE-HISTORY", "SK-PAGE-DISCLOSURE"}      # with a reason in site-kit.json
+DISCLOSURE_PAGE = "conflict-of-interest"
+DISCLOSURE_COLUMNS = ["contributor", "orcid", "project", "kind", "role", "note"]
+DISCLOSURE_KINDS = {"examined system", "compared system", "tool", "benchmark", "AI assistance", "other"}  # and "source of NAME"
+ORCID = re.compile(r"^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$")
+TAIL = ("Upstream", "History", "Methodology", "Disclosure", "Docs", "GitHub", "Search")   # SPEC.md §2
+MENU_MAX = 9
 MODULE = "github.com/s-celles/site-kit"
 HEXTRA = "github.com/imfing/hextra"
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
@@ -171,6 +178,33 @@ def find_page(site, name):
     return next(iter(sorted(site.rglob(f"{name}.html"))), None)
 
 
+def disclosure_problems(text):
+    """What is wrong with a docs/disclosures.tsv text (SPEC §15), as messages."""
+    lines = [l for l in text.splitlines() if l.strip() and not l.startswith("#")]
+    if not lines or lines[0].split("\t") != DISCLOSURE_COLUMNS:
+        return [f"the header is not {' '.join(DISCLOSURE_COLUMNS)}"]
+    out, people, with_ai = [], set(), set()
+    for n, line in enumerate(lines[1:], 2):
+        f = line.split("\t")
+        if len(f) != len(DISCLOSURE_COLUMNS):
+            out.append(f"row {n}: {len(f)} columns")
+            continue
+        who, orcid, project, kind, role, _ = f
+        if not who or not project or not role:
+            out.append(f"row {n}: contributor, project and role are required")
+        if not ORCID.match(orcid):
+            out.append(f"row {n}: invalid ORCID {orcid!r}")
+        if kind not in DISCLOSURE_KINDS and not (kind.startswith("source of ") and len(kind) > len("source of ")):
+            out.append(f"row {n}: unknown kind {kind!r}")
+        people.add(who)
+        if kind == "AI assistance":
+            with_ai.add(who)
+    if len(lines) == 1:
+        out.append("no declaration")
+    out += [f"{who} has no AI assistance row" for who in sorted(people - with_ai)]
+    return out
+
+
 def check(site, config=None, hugo=None, repo=None):
     site = pathlib.Path(site)
     cfg = json.loads(pathlib.Path(config).read_text()) if config else {}
@@ -197,12 +231,23 @@ def check(site, config=None, hugo=None, repo=None):
         fail("SK-HOME-CITE", "the home page has no heading 'Cite'")
     if repo is not None and not (pathlib.Path(repo) / "CITATION.cff").exists():
         fail("SK-CITATION", f"no CITATION.cff in {repo}")
+    omit = cfg.get("omit", {})
+    disclosure_omitted = bool(str(omit.get(DISCLOSURE_PAGE, "")).strip())
+    if not disclosure_omitted:
+        if not any(re.search(rf"/{DISCLOSURE_PAGE}(/|\.html)?(#.*)?$", n.attrs.get("href") or "") for n in home.iter() if n.tag == "a"):
+            fail("SK-HOME-DISCLOSURE", "the home page does not link to the conflict of interest page")
+        if repo is not None:
+            tsv = pathlib.Path(repo) / "docs" / "disclosures.tsv"
+            if not tsv.exists():
+                fail("SK-DISCLOSURES", f"no docs/disclosures.tsv in {repo}")
+            else:
+                for problem in disclosure_problems(tsv.read_text()):
+                    fail("SK-DISCLOSURES", f"docs/disclosures.tsv: {problem}")
 
     # pages
-    omit = cfg.get("omit", {})
     for rule, name in PAGES.items():
         if find_page(site, name) is None:
-            if RULES[rule] == "SHOULD" and str(omit.get(name, "")).strip():
+            if rule in OMITTABLE and str(omit.get(name, "")).strip():
                 continue
             fail(rule, f"no {name} page" + (" (an omission in site-kit.json needs a reason)" if name in omit else ""))
     if not (site / "llms.txt").exists():

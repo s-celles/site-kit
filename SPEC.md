@@ -1,7 +1,10 @@
-# site-kit specification, version 0.2
+# site-kit specification, version 0.3
 
-> **Status: agreed, 2026-11-19.** The agents of the four sites that use
-> site-kit (README) answered yes to this version. The texts that commit the owner
+> **Status: proposed, 2026-11-20.** Adds the conflict of interest page and
+> declarations (§15) and its place in the menu (§2), at the request of the
+> owner of the four sites. SPEC 0.2 was agreed on 2026-11-19 by the agents of
+> the four sites that use site-kit (README); this version waits for their
+> answers (§14). The texts that commit the owner
 > (disclaimer, provenance, licences, citation) are approved by the owner, not
 > by the agents, site by site.
 
@@ -42,7 +45,7 @@ properties, benches). "Entry" means one item of it.
 
 ## 2. Navigation
 
-The main menu has at most 8 entries, in this order, entries a site does not
+The main menu has at most 9 entries, in this order, entries a site does not
 have being left out (SK-MENU-ORDER, checked when the menu is declared in
 `site-kit.json` or in a Hugo configuration):
 
@@ -50,9 +53,10 @@ have being left out (SK-MENU-ORDER, checked when the menu is declared in
 2. Upstream;
 3. History;
 4. Methodology;
-5. Docs;
-6. GitHub;
-7. Search.
+5. Disclosure (the conflict of interest page, §15);
+6. Docs;
+7. GitHub;
+8. Search.
 
 Docs is the catch-all: contributing, agent policy, systems and environment,
 how the site is built, changelog. These are sidebar pages, not menu entries.
@@ -77,6 +81,9 @@ MUST, in this order:
    Statuses;
 5. a heading "Cite" with a citation generated from `CITATION.cff`, not
    copied by hand (SK-HOME-CITE; SK-CITATION: the file exists).
+
+SHOULD, for a site with a conflict of interest page (§15): its one-line
+summary near the disclaimer, with a link to the page (SK-HOME-DISCLOSURE).
 
 SHOULD: the newest entries, or the latest runs; a short table of the current
 state. MUST for a site that reuses third-party material: a "Sources" section
@@ -246,6 +253,9 @@ on two builds of one commit.
 | SK-PAGE-METHODOLOGY | MUST | a `methodology` page |
 | SK-PAGE-UPSTREAM | SHOULD | an `upstream` page, unless declared omitted |
 | SK-PAGE-HISTORY | SHOULD | a `history` page, unless declared omitted |
+| SK-PAGE-DISCLOSURE | MUST | a `conflict-of-interest` page, unless declared omitted with a reason (§15) |
+| SK-DISCLOSURES | MUST | `docs/disclosures.tsv` in the repository (`--repo`) has the §15 columns and kinds, and an AI assistance row for every contributor |
+| SK-HOME-DISCLOSURE | SHOULD | the home page links to the `conflict-of-interest` page |
 | SK-LLMS | MUST | `llms.txt`, and `llms-full.txt` or its `llms-full-NAME.txt` parts, at the root |
 | SK-BADGE-WORD | MUST | every `.sk-badge` shows a non-empty label |
 | SK-BADGE-TONE | MUST | a `data-status` word has one tone across the site |
@@ -262,8 +272,8 @@ Documenter's: the footer's colophon date and the build time in
 
 ```json
 {
-  "spec": "0.2",
-  "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Docs", "GitHub", "Search"],
+  "spec": "0.3",
+  "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosure", "Docs", "GitHub", "Search"],
   "omit": {"upstream": "the project cites three issues, listed on Methodology"},
   "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>", "\"generation_timestamp\":\"[^\"]*\""]
 }
@@ -276,3 +286,37 @@ has answered yes or "does not apply". Versions follow Semantic Versioning;
 each site pins a tag (Hugo: its `go.mod`; others: the tag it fetches) and
 names it on its Methodology page. The CHANGELOG has one line per rule
 identifier that changes.
+
+## 15. Conflict of interest and AI assistance
+
+A site that examines, compares or evaluates third-party systems publishes a
+page `conflict-of-interest`, in the menu as Disclosure (SK-PAGE-DISCLOSURE). A
+site that examines none declares the page omitted in `site-kit.json`, with
+its reason.
+
+The page is generated from `docs/disclosures.tsv`, committed in the
+repository (SK-DISCLOSURES): lines starting with `#` are comments, anywhere
+in the file, including before the header; then a header and one row per contributor and project, with the tab-separated
+columns `contributor`, `orcid`, `project`, `kind`, `role` and `note`. `kind`
+is one of `examined system`, `compared system`, `tool`, `source of NAME`,
+`benchmark`, `AI assistance`, `other`. A row whose role is `none`, or whose
+project is `none`, is also a declaration. Every contributor writes at least
+one `AI assistance` row: what an AI assistant did, and how its output was
+reviewed, without naming the model or the tool ("an AI assistant").
+
+The page shows:
+
+- a one-line summary;
+- one section per contributor, with their ORCID and their rows;
+- a matrix with one row per system present in the published results and per
+  declared source or tool, and one column per contributor, each cell the
+  declared role or `none`;
+- the use of AI assistants;
+- what limits the bias;
+- how to report an unfair comparison or a wrong declaration.
+
+The one-line summary also appears on the home page (§3), in the footer, the
+README, `CITATION.cff` and `llms.txt`. A change that touches an entry, a
+test, an adapter, a check or an input list is not complete without the rows
+of the person it is made for; an agent that makes it adds or updates those
+rows. The site's text uses no em dash.

@@ -1,6 +1,13 @@
 {
-  "spec": "0.2",
-  "menu": ["Findings", "Upstream", "History", "Methodology", "Search"],
+  "spec": "0.3",
+  "menu": [
+    "Findings",
+    "Upstream",
+    "History",
+    "Methodology",
+    "Disclosure",
+    "Search"
+  ],
   "omit": {},
   "volatile": []
 }
