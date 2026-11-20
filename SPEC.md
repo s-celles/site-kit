@@ -80,7 +80,12 @@ MUST, in this order:
 4. at most four stat tiles, and links to the registry, Methodology and
    Statuses;
 5. a heading "Cite" with a citation generated from `CITATION.cff`, not
-   copied by hand (SK-HOME-CITE; SK-CITATION: the file exists).
+   copied by hand (SK-HOME-CITE; SK-CITATION: the file exists). A BibTeX
+   entry's key is the author's family name, the year and a short slug of the
+   project (the repository name or an abbreviation of the title), lowercase,
+   alphanumerics only, stable across releases, for example
+   `celles2026goinlean`: author and year alone collide across one author's
+   works of a year.
 
 SHOULD, for a site with a conflict of interest page (§15): its one-line
 summary near the disclaimer, with a link to the page (SK-HOME-DISCLOSURE).

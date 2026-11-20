@@ -4,6 +4,12 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- SPEC §3 and TEMPLATES.md: the BibTeX key of the Cite section is author, year and
+  a short project slug (`celles2026goinlean`), so that one author's works of a year
+  do not collide. Wording only; no rule identifier changes.
+
 ## [0.3.0] - 2026-11-20
 
 SPEC 0.3: the conflict of interest page and the declarations of every

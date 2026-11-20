@@ -40,6 +40,14 @@ so.
 A site whose numbers come from a dated run rather than from a commit writes
 "Data from the run of {YYYY-MM-DD}" instead.
 
+## Citation key
+
+> `{family}{year}{slug}`: for example `celles2026goinlean`, `celles2026casbench`.
+
+The slug is short, lowercase and alphanumeric: the repository name or an
+abbreviation of the title. Keep it stable across releases, so that existing
+citations keep resolving.
+
 ## Footer
 
 > An individual, non-commercial project, not endorsed by {...}. Code
