@@ -282,7 +282,7 @@ Documenter's: the footer's colophon date and the build time in
 
 ```json
 {
-  "spec": "0.3",
+  "spec": "0.4",
   "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosures", "Docs", "GitHub", "Search"],
   "omit": {"upstream": "the project cites three issues, listed on Methodology"},
   "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>", "\"generation_timestamp\":\"[^\"]*\""]
@@ -304,7 +304,10 @@ page `disclosures`, in the menu as Disclosures (SK-PAGE-DISCLOSURE): its
 conflict of interest and AI assistance declarations. The page, the menu
 entry and the data file `docs/disclosures.tsv` share the one name. A site
 that served the page as `conflict-of-interest` (SPEC 0.3) SHOULD keep a
-redirect from that address. A site that examines none declares the page omitted in `site-kit.json`, with
+redirect from that address: with Hugo, `aliases: [/conflict-of-interest/]`
+in the page's front matter; with another generator, a static
+`conflict-of-interest/index.html` holding a `<meta http-equiv="refresh">`
+to the new page and a link to it. A site that examines none declares the page omitted in `site-kit.json`, with
 its reason.
 
 The page is generated from `docs/disclosures.tsv`, committed in the

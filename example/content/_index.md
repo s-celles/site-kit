@@ -17,7 +17,7 @@ type: docs
 
 </div>
 
-Disclosure: the author maintains one of the systems compared and works with an AI assistant. [Conflict of interest](/disclosures/)
+Disclosure: the author maintains one of the systems compared and works with an AI assistant. [Disclosures](/disclosures/)
 
 {{< stats >}}{{< stat value="2" label="findings" href="/findings" >}}{{< stat value="1" label="open" href="/upstream" >}}{{< /stats >}}
 

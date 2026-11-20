@@ -49,7 +49,7 @@ HOME = """<!doctype html><html><head><title>X</title><meta charset="utf-8"></hea
 <p><strong>Disclaimer.</strong> An individual, non-commercial project, not endorsed by anyone.</p>
 <p><strong>Provenance.</strong> Written with an AI assistant; a person decides what is reported.</p>
 </div>
-<p>The author maintains one of the systems compared. <a href="/disclosures/">Conflict of interest</a></p>
+<p>The author maintains one of the systems compared. <a href="/disclosures/">Disclosures</a></p>
 <div class="sk-stats"><a class="sk-stat" href="/f"><strong>2</strong><span>findings</span></a></div>
 <p><span class="sk-badge sk-tone--good" data-status="PASS">PASS</span></p>
 <h2 id="cite">Cite<a class="subheading-anchor" href="#cite"></a></h2>
