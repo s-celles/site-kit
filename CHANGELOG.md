@@ -4,7 +4,9 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
-SPEC 0.4, proposed.
+## [0.4.0] - 2026-11-20
+
+SPEC 0.4, agreed by the four sites at the owner's request.
 
 ### Changed
 
