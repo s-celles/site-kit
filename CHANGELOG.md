@@ -4,6 +4,11 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-20
+
+SPEC 0.3: the conflict of interest page and the declarations of every
+contributor, approved by the owner of the four sites.
+
 ### Added
 
 - SK-PAGE-DISCLOSURE (MUST): a `conflict-of-interest` page, unless declared
@@ -19,10 +24,7 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 - SK-MENU-ORDER: Disclosure joins the shared tail after Methodology, and the
   menu may have 9 entries (SPEC §2).
-- SPEC version 0.3, proposed; `check_site.py` checks SPEC 0.3.
-
-### Changed
-
+- SPEC version 0.3; `check_site.py` checks SPEC 0.3.
 - SPEC §13: the `site-kit.json` example adds Documenter's second volatile
   line, `generation_timestamp` in `.documenter-siteinfo.json`.
 

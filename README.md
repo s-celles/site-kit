@@ -1,6 +1,6 @@
 # site-kit
 
-> **SPEC 0.3**, proposed (adds the conflict of interest page, §15); SPEC 0.2
+> **SPEC 0.3** (v0.3.0, 2026-11-20: adds the conflict of interest page, §15); SPEC 0.2
 > was agreed by the four sites. Changes follow `SPEC.md`, §14.
 
 The shared structure and building blocks of the project sites of
@@ -54,7 +54,7 @@ params:
 
 Hugo gives precedence to the first import, so site-kit comes before Hextra:
 Hextra has its own `badge` shortcode and empty `custom/` hooks. Then
-`hugo mod get github.com/s-celles/site-kit@v0.2.0`. A site that needs
+`hugo mod get github.com/s-celles/site-kit@v0.3.0`. A site that needs
 more in the page head adds `layouts/_partials/site-kit/head-extra.html`; a
 site that defines its own `custom/head-end.html` must call
 `{{ partial "site-kit/head.html" . }}` in it.
@@ -62,7 +62,7 @@ site that defines its own `custom/head-end.html` must call
 In CI, after the site is built (twice, for the determinism check):
 
 ```sh
-git clone --depth 1 --branch v0.2.0 https://github.com/s-celles/site-kit "$RUNNER_TEMP/site-kit"
+git clone --depth 1 --branch v0.3.0 https://github.com/s-celles/site-kit "$RUNNER_TEMP/site-kit"
 python3 -I "$RUNNER_TEMP/site-kit/tools/check_site.py" --site public --config site-kit.json --repo . [--hugo site/hugo.yaml]
 python3 -I "$RUNNER_TEMP/site-kit/tools/compare_builds.py" public public-again --config site-kit.json
 ```

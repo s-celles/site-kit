@@ -1,10 +1,10 @@
 # site-kit specification, version 0.3
 
-> **Status: proposed, 2026-11-20.** Adds the conflict of interest page and
-> declarations (§15) and its place in the menu (§2), at the request of the
-> owner of the four sites. SPEC 0.2 was agreed on 2026-11-19 by the agents of
-> the four sites that use site-kit (README); this version waits for their
-> answers (§14). The texts that commit the owner
+> **Status: agreed, 2026-11-20 (v0.3.0).** Adds the conflict of interest page
+> and declarations (§15) and its place in the menu (§2), at the request of the
+> owner of the four sites, who approved and tagged this version; SPEC 0.2 was
+> agreed on 2026-11-19 by the agents of the four sites that use site-kit
+> (README). The texts that commit the owner
 > (disclaimer, provenance, licences, citation) are approved by the owner, not
 > by the agents, site by site.
 
