@@ -4,6 +4,23 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
+### Added
+
+- SK-PAGE-DISCLOSURE (MUST): a `conflict-of-interest` page, unless declared
+  omitted with a reason (SPEC §15).
+- SK-DISCLOSURES (MUST): `docs/disclosures.tsv` (contributor, orcid, project,
+  kind, role, note) with the §15 kinds and an AI assistance row, without the
+  tool's name, for every contributor (SPEC §15).
+- SK-HOME-DISCLOSURE (SHOULD): the home page links to the conflict of
+  interest page (SPEC §3).
+- TEMPLATES.md: the conflict of interest summary sentence.
+
+### Changed
+
+- SK-MENU-ORDER: Disclosure joins the shared tail after Methodology, and the
+  menu may have 9 entries (SPEC §2).
+- SPEC version 0.3, proposed; `check_site.py` checks SPEC 0.3.
+
 ### Changed
 
 - SPEC §13: the `site-kit.json` example adds Documenter's second volatile

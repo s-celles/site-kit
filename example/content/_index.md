@@ -17,6 +17,8 @@ type: docs
 
 </div>
 
+Disclosure: the author maintains one of the systems compared and works with an AI assistant. [Conflict of interest](/conflict-of-interest/)
+
 {{< stats >}}{{< stat value="2" label="findings" href="/findings" >}}{{< stat value="1" label="open" href="/upstream" >}}{{< /stats >}}
 
 {{< badge "PASS" >}} {{< badge "FAIL" >}} {{< badge "status" "open" >}} {{< badge "unknown" >}}
