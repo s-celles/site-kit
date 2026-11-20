@@ -1,9 +1,9 @@
 # site-kit specification, version 0.4
 
-> **Status of 0.4: proposed.** Renames the conflict of interest page to
-> `disclosures`, with the menu entry Disclosures, so that the page, the menu
-> and `docs/disclosures.tsv` share one name (§2, §15). It becomes 0.4 when the
-> four sites' agents have answered yes or "does not apply" (§14).
+> **Status of 0.4: agreed, 2026-11-20 (v0.4.0).** Renames the conflict of
+> interest page to `disclosures`, with the menu entry Disclosures, so that the
+> page, the menu and `docs/disclosures.tsv` share one name (§2, §15), at the
+> owner's request; the agents of the four sites answered yes.
 >
 > **Status of 0.3: agreed, 2026-11-20 (v0.3.0).** Adds the conflict of interest page
 > and declarations (§15) and its place in the menu (§2), at the request of the
