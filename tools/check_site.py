@@ -19,7 +19,7 @@ import sys
 from collections import namedtuple
 from html.parser import HTMLParser
 
-SPEC_VERSION = "0.3"
+SPEC_VERSION = "0.4"
 Violation = namedtuple("Violation", "rule level message")
 
 RULES = {
@@ -34,13 +34,13 @@ RULES = {
 }
 PAGES = {"SK-PAGE-STATUSES": "statuses", "SK-PAGE-METHODOLOGY": "methodology",
          "SK-PAGE-UPSTREAM": "upstream", "SK-PAGE-HISTORY": "history",
-         "SK-PAGE-DISCLOSURE": "conflict-of-interest"}
+         "SK-PAGE-DISCLOSURE": "disclosures"}
 OMITTABLE = {"SK-PAGE-UPSTREAM", "SK-PAGE-HISTORY", "SK-PAGE-DISCLOSURE"}      # with a reason in site-kit.json
-DISCLOSURE_PAGE = "conflict-of-interest"
+DISCLOSURE_PAGE = "disclosures"
 DISCLOSURE_COLUMNS = ["contributor", "orcid", "project", "kind", "role", "note"]
 DISCLOSURE_KINDS = {"examined system", "compared system", "tool", "benchmark", "AI assistance", "other"}  # and "source of NAME"
 ORCID = re.compile(r"^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$")
-TAIL = ("Upstream", "History", "Methodology", "Disclosure", "Docs", "GitHub", "Search")   # SPEC.md §2
+TAIL = ("Upstream", "History", "Methodology", "Disclosures", "Docs", "GitHub", "Search")   # SPEC.md §2
 MENU_MAX = 9
 MODULE = "github.com/s-celles/site-kit"
 HEXTRA = "github.com/imfing/hextra"
@@ -235,7 +235,7 @@ def check(site, config=None, hugo=None, repo=None):
     disclosure_omitted = bool(str(omit.get(DISCLOSURE_PAGE, "")).strip())
     if not disclosure_omitted:
         if not any(re.search(rf"/{DISCLOSURE_PAGE}(/|\.html)?(#.*)?$", n.attrs.get("href") or "") for n in home.iter() if n.tag == "a"):
-            fail("SK-HOME-DISCLOSURE", "the home page does not link to the conflict of interest page")
+            fail("SK-HOME-DISCLOSURE", "the home page does not link to the disclosures page")
         if repo is not None:
             tsv = pathlib.Path(repo) / "docs" / "disclosures.tsv"
             if not tsv.exists():

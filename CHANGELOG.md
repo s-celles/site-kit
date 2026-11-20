@@ -4,6 +4,15 @@ Notable changes follow Keep a Changelog; versions follow Semantic Versioning.
 
 ## [Unreleased]
 
+SPEC 0.4, proposed.
+
+### Changed
+
+- SK-PAGE-DISCLOSURE, SK-HOME-DISCLOSURE: the page is `disclosures`, no
+  longer `conflict-of-interest`, and its menu entry Disclosures (SPEC §2,
+  §15), the name of `docs/disclosures.tsv`. A site that served the 0.3
+  address should keep a redirect from it. `check_site.py` checks SPEC 0.4.
+
 ## [0.3.1] - 2026-11-20
 
 Agreed by the four sites.

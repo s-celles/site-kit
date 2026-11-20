@@ -1,6 +1,11 @@
-# site-kit specification, version 0.3
+# site-kit specification, version 0.4
 
-> **Status: agreed, 2026-11-20 (v0.3.0).** Adds the conflict of interest page
+> **Status of 0.4: proposed.** Renames the conflict of interest page to
+> `disclosures`, with the menu entry Disclosures, so that the page, the menu
+> and `docs/disclosures.tsv` share one name (§2, §15). It becomes 0.4 when the
+> four sites' agents have answered yes or "does not apply" (§14).
+>
+> **Status of 0.3: agreed, 2026-11-20 (v0.3.0).** Adds the conflict of interest page
 > and declarations (§15) and its place in the menu (§2), at the request of the
 > owner of the four sites, who approved and tagged this version; SPEC 0.2 was
 > agreed on 2026-11-19 by the agents of the four sites that use site-kit
@@ -53,7 +58,7 @@ have being left out (SK-MENU-ORDER, checked when the menu is declared in
 2. Upstream;
 3. History;
 4. Methodology;
-5. Disclosure (the conflict of interest page, §15);
+5. Disclosures (the conflict of interest and AI assistance page, §15);
 6. Docs;
 7. GitHub;
 8. Search.
@@ -258,9 +263,9 @@ on two builds of one commit.
 | SK-PAGE-METHODOLOGY | MUST | a `methodology` page |
 | SK-PAGE-UPSTREAM | SHOULD | an `upstream` page, unless declared omitted |
 | SK-PAGE-HISTORY | SHOULD | a `history` page, unless declared omitted |
-| SK-PAGE-DISCLOSURE | MUST | a `conflict-of-interest` page, unless declared omitted with a reason (§15) |
+| SK-PAGE-DISCLOSURE | MUST | a `disclosures` page, unless declared omitted with a reason (§15) |
 | SK-DISCLOSURES | MUST | `docs/disclosures.tsv` in the repository (`--repo`) has the §15 columns and kinds, and an AI assistance row for every contributor |
-| SK-HOME-DISCLOSURE | SHOULD | the home page links to the `conflict-of-interest` page |
+| SK-HOME-DISCLOSURE | SHOULD | the home page links to the `disclosures` page |
 | SK-LLMS | MUST | `llms.txt`, and `llms-full.txt` or its `llms-full-NAME.txt` parts, at the root |
 | SK-BADGE-WORD | MUST | every `.sk-badge` shows a non-empty label |
 | SK-BADGE-TONE | MUST | a `data-status` word has one tone across the site |
@@ -278,7 +283,7 @@ Documenter's: the footer's colophon date and the build time in
 ```json
 {
   "spec": "0.3",
-  "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosure", "Docs", "GitHub", "Search"],
+  "menu": ["Findings", "Properties", "Upstream", "History", "Methodology", "Disclosures", "Docs", "GitHub", "Search"],
   "omit": {"upstream": "the project cites three issues, listed on Methodology"},
   "volatile": ["<span class=\"colophon-date\"[^>]*>[^<]*</span>", "\"generation_timestamp\":\"[^\"]*\""]
 }
@@ -295,8 +300,11 @@ identifier that changes.
 ## 15. Conflict of interest and AI assistance
 
 A site that examines, compares or evaluates third-party systems publishes a
-page `conflict-of-interest`, in the menu as Disclosure (SK-PAGE-DISCLOSURE). A
-site that examines none declares the page omitted in `site-kit.json`, with
+page `disclosures`, in the menu as Disclosures (SK-PAGE-DISCLOSURE): its
+conflict of interest and AI assistance declarations. The page, the menu
+entry and the data file `docs/disclosures.tsv` share the one name. A site
+that served the page as `conflict-of-interest` (SPEC 0.3) SHOULD keep a
+redirect from that address. A site that examines none declares the page omitted in `site-kit.json`, with
 its reason.
 
 The page is generated from `docs/disclosures.tsv`, committed in the

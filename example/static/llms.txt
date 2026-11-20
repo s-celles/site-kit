@@ -6,4 +6,4 @@ Disclosure: the author maintains one of the systems compared and works with an A
 - /findings/
 - /statuses/
 - /methodology/
-- /conflict-of-interest/
+- /disclosures/
